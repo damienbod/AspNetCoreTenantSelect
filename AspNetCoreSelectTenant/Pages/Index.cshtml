@@ -4,32 +4,35 @@
     ViewData["Title"] = "Azure AD client for multiple tenants";
 }
 
-<div class="text-center">
-    <p>Multiple tenants client</p>
-</div>
-
-
 <div class="card" style="width: 18rem;">
     <div class="card-body">
-        <h5 class="card-title">Index</h5>
+        <h5 class="card-title">Details</h5>
 
-        <div class="mb-3">
-            <label class="form-label">Roles</label>
-            @foreach (var role in Model.RolesInTenant)
-            {
-                <p>@role</p>
-            }
-            
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">AppTenantName: @Model.AppTenantName</h5>
+                        <p class="card-text">TenantId: @Model.TenantId</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-sm-6">
+                <div class="card" style="width: 18rem;">
+                    <div class="card-header">
+                        Roles
+                    </div>
+                    <ul class="list-group list-group-flush">
+                
+                        @foreach (var role in Model.RolesInTenant)
+                        {
+                            <li class="list-group-item">@role</li>
+                        }
+                    </ul>
+                </div>
+            </div>
         </div>
 
-        <div class="mb-3">
-            <label for="tenantId" class="form-label">TenantId</label>
-            <p id="tenantId">@Model.TenantId</p>
-        </div>
-
-        <div class="mb-3">
-            <label for="AppTenantName" class="form-label">AppTenantName</label>
-            <p>@Model.AppTenantName</p>
-        </div>
     </div>
 </div>

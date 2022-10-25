@@ -13,7 +13,10 @@ public static class TenantProvider
 
     public static string GetTenant(string email)
     {
-        return string.Empty;
+        if (email == "damien_bod@hotmail.com")
+            return "Org1";
+        else
+            return "Org2";
     }
 
     public static List<SelectListItem> GetAvailableTenants(string email)

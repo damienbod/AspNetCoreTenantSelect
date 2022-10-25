@@ -22,21 +22,20 @@ public class IndexModel : PageModel
     public void OnGet()
     {
         var name = User.Identity!.Name;
-        var claims = User.Claims.ToList();
 
         if(name != null)
         {
             AvailableAppTenants = TenantProvider.GetAvailableTenants(name);
             AppTenantName = TenantProvider.GetTenant(name);
+
+            List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
+
+            foreach (var role in roleClaims)
+            {
+                RolesInTenant.Add(role.Value);
+            }
+
+            TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
         }
-
-        List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
-
-        foreach (var role in roleClaims)
-        {
-            RolesInTenant.Add(role.Value);
-        }
-
-        TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
     }
 }
