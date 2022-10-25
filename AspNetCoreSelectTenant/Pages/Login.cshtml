@@ -1,0 +1,24 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Azure AD client for multiple tenants";
+}
+
+@if (User.Identity?.IsAuthenticated == true)
+{
+    <div class="text-center">
+        <p>Choose tenant</p>
+    </div>
+
+    <div class="text-center">
+        <a asp-controller="CustomAccount" asp-action="SignIn">Sign in</a>
+    </div>
+}
+else
+{
+    <div class="text-center">
+        <a asp-controller="CustomAccount" asp-action="SignIn">Sign in</a>
+    </div>
+}
+
+
