@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,7 @@ public class CustomAccountController : Controller
         _configuration = configuration;
     }
 
-    [HttpGet("SignIn")]
+    [HttpGet("SignInGet")]
     public IActionResult SignInGet([FromQuery] string redirectUri)
     {
         string redirect;
@@ -28,12 +29,13 @@ public class CustomAccountController : Controller
             redirect = Url.Content("~/")!;
         }
 
-        return Challenge(new AuthenticationProperties { RedirectUri = redirect });
+        return Challenge(new AuthenticationProperties { RedirectUri = redirect }, OpenIdConnectDefaults.AuthenticationScheme);
     }
 
     [HttpPost("SignIn")]
-    public IActionResult SignInPost([FromForm] string domain, [FromQuery] string redirectUri)
+    public IActionResult SignIn([FromForm] string domain, [FromForm] string redirectUri)
     {
+        // TODO handle the domain
         string redirect;
         if (!string.IsNullOrEmpty(redirectUri) && Url.IsLocalUrl(redirectUri))
         {
@@ -44,6 +46,6 @@ public class CustomAccountController : Controller
             redirect = Url.Content("~/")!;
         }
 
-        return Challenge(new AuthenticationProperties { RedirectUri = redirect });
+        return Redirect($"SignInGet?redirect={redirect}");
     }
 }

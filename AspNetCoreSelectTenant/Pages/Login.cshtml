@@ -10,13 +10,13 @@
     <div class="card" style="width: 18rem;">
         <div class="card-body">
             <h5 class="card-title">Sign in</h5>
-            <form>
+            <form asp-controller="CustomAccount" asp-action="SignIn">
                 <div class="mb-3">
                     <label for="domain" class="form-label">Domain</label>
                     <input type="text" class="form-control" asp-for="Domain" id="domain" aria-describedby="choose domain">
                     <div id="domain" class="form-text">Enter your domain, if you know it</div>
                 </div>
-                <button type="submit" class="btn btn-primary">Switch Tenant</button>
+                <button type="submit" id="submit" class="btn btn-primary">Switch Tenant</button>
             </form>
         </div>
     </div>
@@ -25,13 +25,23 @@
     <hr />
 
     <div class="text-center">
-        <a asp-controller="CustomAccount" asp-action="SignIn">Sign in</a>
+        <a asp-controller="CustomAccount" asp-action="SignInGet">Sign in</a>
     </div>
 }
 else
 {
-    <div class="text-center">
-        <a asp-controller="CustomAccount" asp-action="SignIn">Sign in</a>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Sign in</h5>
+            <form asp-controller="CustomAccount" asp-action="SignIn">
+                <div class="mb-3">
+                    <label for="domain" class="form-label">Domain</label>
+                    <input type="text" class="form-control" asp-for="Domain" id="domain" aria-describedby="choose domain">
+                    <div id="domain" class="form-text">Enter your domain, if you know it</div>
+                </div>
+                <button type="submit" id="submit" class="btn btn-primary">Switch Tenant</button>
+            </form>
+        </div>
     </div>
 }
 
