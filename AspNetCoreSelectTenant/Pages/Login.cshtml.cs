@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -24,7 +26,7 @@ public class LoginModel : PageModel
     [BindProperty]
     public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
 
-
+    [HttpGet]
     public void OnGet()
     {
         var name = User.Identity!.Name;
@@ -43,5 +45,12 @@ public class LoginModel : PageModel
 
             TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
         }
+    }
+
+    [HttpGet]
+    public IActionResult OnGetSignIn()
+    {
+        return Challenge(new AuthenticationProperties { RedirectUri = "/"},
+                OpenIdConnectDefaults.AuthenticationScheme);
     }
 }
