@@ -1,14 +1,28 @@
 ﻿@page
-@model IndexModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@model LoginModel
 @{
     ViewData["Title"] = "Azure AD client for multiple tenants";
 }
 
 @if (User.Identity?.IsAuthenticated == true)
 {
-    <div class="text-center">
-        <p>Choose tenant</p>
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 class="card-title">Sign in</h5>
+            <form>
+                <div class="mb-3">
+                    <label for="domain" class="form-label">Domain</label>
+                    <input type="text" class="form-control" asp-for="Domain" id="domain" aria-describedby="choose domain">
+                    <div id="domain" class="form-text">Enter your domain, if you know it</div>
+                </div>
+                <button type="submit" class="btn btn-primary">Switch Tenant</button>
+            </form>
+        </div>
     </div>
+
+ 
+    <hr />
 
     <div class="text-center">
         <a asp-controller="CustomAccount" asp-action="SignIn">Sign in</a>

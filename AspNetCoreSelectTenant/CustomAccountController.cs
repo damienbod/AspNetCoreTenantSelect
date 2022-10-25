@@ -16,7 +16,23 @@ public class CustomAccountController : Controller
     }
 
     [HttpGet("SignIn")]
-    public IActionResult SignIn([FromQuery] string redirectUri)
+    public IActionResult SignInGet([FromQuery] string redirectUri)
+    {
+        string redirect;
+        if (!string.IsNullOrEmpty(redirectUri) && Url.IsLocalUrl(redirectUri))
+        {
+            redirect = redirectUri;
+        }
+        else
+        {
+            redirect = Url.Content("~/")!;
+        }
+
+        return Challenge(new AuthenticationProperties { RedirectUri = redirect });
+    }
+
+    [HttpPost("SignIn")]
+    public IActionResult SignInPost([FromForm] string domain, [FromQuery] string redirectUri)
     {
         string redirect;
         if (!string.IsNullOrEmpty(redirectUri) && Url.IsLocalUrl(redirectUri))
