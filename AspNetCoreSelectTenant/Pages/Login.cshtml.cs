@@ -6,7 +6,7 @@ using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
 
-[AllowAnonymous]
+//[AllowAnonymous]
 public class LoginModel : PageModel
 {
     [BindProperty]

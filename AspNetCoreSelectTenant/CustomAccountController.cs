@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCoreSelectTenant;
 
-[AllowAnonymous]
 [Route("[controller]")]
 public class CustomAccountController : Controller
 {
@@ -16,21 +15,21 @@ public class CustomAccountController : Controller
         _configuration = configuration;
     }
 
-    [HttpGet("SignInGet")]
-    public IActionResult SignInGet([FromQuery] string redirectUri)
-    {
-        string redirect;
-        if (!string.IsNullOrEmpty(redirectUri) && Url.IsLocalUrl(redirectUri))
-        {
-            redirect = redirectUri;
-        }
-        else
-        {
-            redirect = Url.Content("~/")!;
-        }
+    //[HttpGet("SignInGet")]
+    //public IActionResult SignInGet([FromQuery] string redirectUri)
+    //{
+    //    string redirect;
+    //    if (!string.IsNullOrEmpty(redirectUri) && Url.IsLocalUrl(redirectUri))
+    //    {
+    //        redirect = redirectUri;
+    //    }
+    //    else
+    //    {
+    //        redirect = Url.Content("~/")!;
+    //    }
 
-        return Challenge(new AuthenticationProperties { RedirectUri = redirect }, OpenIdConnectDefaults.AuthenticationScheme);
-    }
+    //    return Challenge(new AuthenticationProperties { RedirectUri = redirect }, OpenIdConnectDefaults.AuthenticationScheme);
+    //}
 
     [HttpPost("SignIn")]
     public IActionResult SignIn([FromForm] string domain, [FromForm] string redirectUri)
@@ -46,6 +45,8 @@ public class CustomAccountController : Controller
             redirect = Url.Content("~/")!;
         }
 
-        return Redirect($"SignInGet?redirect={redirect}");
+        return Challenge(new AuthenticationProperties { RedirectUri = redirect }, OpenIdConnectDefaults.AuthenticationScheme);
+    
+        //return Redirect($"SignInGet?redirect={redirect}");
     }
 }

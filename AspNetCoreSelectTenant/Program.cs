@@ -1,5 +1,7 @@
 using AspNetCoreSelectTenant;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
 
@@ -18,13 +20,13 @@ var env = builder.Environment;
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
-builder.Services.AddAuthorization(options =>
+services.AddRazorPages().AddMvcOptions(options =>
 {
-    // By default, all incoming requests will be authorized according to the default policy.
-    options.FallbackPolicy = options.DefaultPolicy;
-});
-builder.Services.AddRazorPages()
-    .AddMicrosoftIdentityUI();
+    //var policy = new AuthorizationPolicyBuilder()
+    //                 .RequireAuthenticatedUser()
+    //                 .Build();
+    //options.Filters.Add(new AuthorizeFilter(policy));
+}).AddMicrosoftIdentityUI();
 
 var app = builder.Build();
 
