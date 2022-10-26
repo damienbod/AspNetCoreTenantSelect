@@ -53,15 +53,8 @@ public class LoginModel : PageModel
     /// <returns></returns>
     public IActionResult OnGetSignIn([FromQuery]string domain)
     {
+        // TO set domain
         return Challenge(new AuthenticationProperties { RedirectUri = "/"},
                 OpenIdConnectDefaults.AuthenticationScheme);
     }
-
-    //public IActionResult OnPostSignIn()
-    //{
-    //    return Unauthorized();
-    //    return Redirect("Login?handler=SignIn");
-    //    //return Challenge(new AuthenticationProperties { RedirectUri = "/" },
-    //    //        OpenIdConnectDefaults.AuthenticationScheme);
-    //}
 }

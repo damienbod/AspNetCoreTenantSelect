@@ -8,34 +8,27 @@
 <!-- Section: Design Block -->
 <section class="text-center">
     <!-- Background image -->
-    <div class="p-5 bg-image" style="
-        background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');
-        height: 300px;
-        "></div>
+    <div class="p-5 bg-image" style="background-image: url('https://mdbootstrap.com/img/new/textures/full/171.jpg');height: 300px;"></div>
     <!-- Background image -->
 
     @if (User.Identity?.IsAuthenticated == true)
     {
-        <div class="card mx-4 mx-md-5 shadow-5-strong" style="
-        margin-top: -100px;
-        background: hsla(0, 0%, 100%, 0.8);
-        backdrop-filter: blur(30px);
-        ">
+        <div class="card mx-4 mx-md-5 shadow-5-strong" style="margin-top: -100px; background: hsla(0, 0%, 100%, 0.8); backdrop-filter: blur(30px);">
         <div class="card-body py-5 px-md-5">
 
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-8">
                     <h2 class="fw-bold mb-5">Sign in</h2>
-                        <form asp-controller="CustomAccount" asp-action="SignIn">
+
                         <div class="form-outline mb-4">
-                            <select asp-for="Domain" class="form-control" asp-items="@Model.AvailableAppTenants"></select>
+                            <ul class="form-control">
+                                @foreach (var item in Model.AvailableAppTenants)
+                                {
+                                    <li><a class="dropdown-item" href="/Login?handler=SignIn&domain=@item.Text">@item.Text</a></li>
+                                }
+                            </ul>
                             <label for="domain" class="form-label">Select your domain</label> 
                         </div>
-
-                        <!-- Submit button -->
-                        <button type="submit" id="submit" class="btn btn-primary btn-block mb-4">Switch domain</button>
-
-                    </form>
                 </div>
             </div>
         </div>
@@ -43,11 +36,7 @@
     }
     else
     {
-        <div class="card mx-4 mx-md-5 shadow-5-strong" style="
-        margin-top: -100px;
-        background: hsla(0, 0%, 100%, 0.8);
-        backdrop-filter: blur(30px);
-        ">
+        <div class="card mx-4 mx-md-5 shadow-5-strong" style="margin-top: -100px;background: hsla(0, 0%, 100%, 0.8);backdrop-filter: blur(30px);">
             <div class="card-body py-5 px-md-5">
 
                 <div class="row d-flex justify-content-center">

@@ -1,4 +1,6 @@
 using AspNetCoreSelectTenant;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -19,6 +21,38 @@ var env = builder.Environment;
 // Add services to the container.
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
+
+//services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+//    .AddCookie();
+
+//services.AddAuthentication()
+//    .AddMicrosoftIdentityWebApp(configuration.GetSection("AzureAd"), OpenIdConnectDefaults.AuthenticationScheme, "cookiet1");
+
+services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
+    options.Events.OnTokenValidated = async context =>
+    {
+        await existingOnTokenValidatedHandler(context);
+
+        if (context.Principal != null)
+        {
+            await context.HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
+        }
+    };
+});
+
+services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    var redirectToIdentityProvider = options.Events.OnRedirectToIdentityProvider;
+    options.Events.OnRedirectToIdentityProvider = async context =>
+    {
+        var dd = context.Properties.GetParameter<string?>("domain");
+
+        await redirectToIdentityProvider(context); 
+    };
+});
 
 services.AddRazorPages().AddMvcOptions(options =>
 {
