@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace AspNetCoreSelectTenant;
 
+[AllowAnonymous]
 [Route("[controller]")]
 public class CustomAccountController : Controller
 {
