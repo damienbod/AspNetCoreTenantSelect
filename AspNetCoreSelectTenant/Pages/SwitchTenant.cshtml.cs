@@ -54,11 +54,12 @@ public class SwitchTenantModel : PageModel
     /// <summary>
     /// Only works from a direct GET, not a post or a redirect
     /// </summary>
-    /// <param name="domain"></param>
-    /// <returns></returns>
     public IActionResult OnGetSignIn([FromQuery]string domain)
     {
-        // TO set domain
+        var email = User.Identity!.Name;
+        if(email != null)
+            _tenantProvider.SetTenant(email, domain);
+
         return Challenge(new AuthenticationProperties { RedirectUri = "/" },
                 OpenIdConnectDefaults.AuthenticationScheme);
     }

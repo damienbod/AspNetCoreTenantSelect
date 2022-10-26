@@ -28,10 +28,6 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 
 services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
-    //var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
-    options.Prompt = "select_account";
-    //options.TenantId = tenantProvider.GetTenant();
-
     var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
     options.Events.OnTokenValidated = async context =>
     {
