@@ -22,14 +22,11 @@ var env = builder.Environment;
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
-//services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-//    .AddCookie();
-
-//services.AddAuthentication()
-//    .AddMicrosoftIdentityWebApp(configuration.GetSection("AzureAd"), OpenIdConnectDefaults.AuthenticationScheme, "cookiet1");
-
-services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
+    options.Prompt = "select_account";
+    // options.TenantId = "...";
+
     var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
     options.Events.OnTokenValidated = async context =>
     {
@@ -43,16 +40,6 @@ services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationSch
     };
 });
 
-services.Configure<OpenIdConnectOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
-{
-    var redirectToIdentityProvider = options.Events.OnRedirectToIdentityProvider;
-    options.Events.OnRedirectToIdentityProvider = async context =>
-    {
-        var dd = context.Properties.GetParameter<string?>("domain");
-
-        await redirectToIdentityProvider(context); 
-    };
-});
 
 services.AddRazorPages().AddMvcOptions(options =>
 {

@@ -53,7 +53,7 @@ public class SwitchTenantModel : PageModel
     public IActionResult OnGetSignIn([FromQuery]string domain)
     {
         // TO set domain
-        return Challenge(new AuthenticationProperties { RedirectUri = "/"},
+        return Challenge(new AuthenticationProperties { RedirectUri = "/" },
                 OpenIdConnectDefaults.AuthenticationScheme);
     }
 }
