@@ -28,9 +28,9 @@ services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 
 services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
-    var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
+    //var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
     options.Prompt = "select_account";
-    options.TenantId = tenantProvider.GetTenant();
+    //options.TenantId = tenantProvider.GetTenant();
 
     var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
     options.Events.OnTokenValidated = async context =>
@@ -42,6 +42,26 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
             await context.HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
         }
+    };
+});
+
+services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+{
+    var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
+    options.Prompt = "select_account";
+    
+    var redirectToIdentityProvider = options.Events.OnRedirectToIdentityProvider;
+    options.Events.OnRedirectToIdentityProvider = async context =>
+    {
+        var email = context.HttpContext!.User.Identity!.Name;
+        if(email != null)
+        {
+            var tenant = tenantProvider.GetTenant(email);
+            var address = context.ProtocolMessage.IssuerAddress.Replace("common", tenant.Value);
+            context.ProtocolMessage.IssuerAddress = address;
+        }
+
+        await redirectToIdentityProvider(context);
     };
 });
 
