@@ -9,35 +9,20 @@ public class TenantProvider
     private static SelectListItem _org1 = new("Org1", "7ff95b15-dc21-4ba6-bc92-824856578fc1");
     private static SelectListItem _org2 = new("Org2", "a0958f45-195b-4036-9259-de2f7e594db6");
     private static SelectListItem _org3 = new("Org3", "5698af84-5720-4ff0-bdc3-9d9195314244");
+    private static SelectListItem _common = new("common", "common");
 
     private static readonly object _lock = new();
     private IDistributedCache _cache;
-    private readonly IHttpContextAccessor _context;
     private const int cacheExpirationInDays = 1;
 
-    public TenantProvider(IDistributedCache cache, IHttpContextAccessor context)
+    public TenantProvider(IDistributedCache cache)
     {
         _cache = cache;
-        _context = context;
     }
 
     public void SetTenant(string email, string org)
     {
         AddToCache(email, GetTenantForOrg(org));
-    }
-
-    public string GetTenant()
-    {
-        var userEmail = _context.HttpContext!.User.Identity!.Name;
-        if(userEmail != null)
-        {
-            var org = GetFromCache(userEmail);
-
-            if (org != null)
-                return org.Value;
-        }
-
-        return "common";
     }
 
     public SelectListItem GetTenant(string email)
@@ -47,7 +32,7 @@ public class TenantProvider
         if (org != null)
             return org;
 
-        return _org1;
+        return _common;
     }
 
     public List<SelectListItem> GetAvailableTenants(string email)
@@ -69,8 +54,10 @@ public class TenantProvider
             return _org1;
         else if (org == "Org2")
             return _org2;
-        else
+        else if (org == "Org3")
             return _org3;
+
+        return _common;
     }
 
     private void AddToCache(string key, SelectListItem userActiveOrg)

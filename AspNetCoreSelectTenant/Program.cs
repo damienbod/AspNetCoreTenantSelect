@@ -20,7 +20,6 @@ var env = builder.Environment;
 
 services.AddDistributedMemoryCache();
 
-services.AddHttpContextAccessor();
 services.AddTransient<TenantProvider>();
 
 services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
