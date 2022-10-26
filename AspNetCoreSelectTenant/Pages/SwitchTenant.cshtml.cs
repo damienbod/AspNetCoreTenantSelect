@@ -1,6 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -10,6 +9,13 @@ namespace AspNetCoreSelectTenant.Pages;
 
 public class SwitchTenantModel : PageModel
 {
+    private readonly TenantProvider _tenantProvider;
+
+    public SwitchTenantModel(TenantProvider tenantProvider)
+    {
+        _tenantProvider = tenantProvider;
+    }
+
     [BindProperty]
     public string Domain { get; set; } = string.Empty;
 
@@ -31,8 +37,8 @@ public class SwitchTenantModel : PageModel
 
         if (name != null)
         {
-            AvailableAppTenants = TenantProvider.GetAvailableTenants(name);
-            AppTenantName = TenantProvider.GetTenant(name);
+            AvailableAppTenants = _tenantProvider.GetAvailableTenants(name);
+            AppTenantName = _tenantProvider.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
 

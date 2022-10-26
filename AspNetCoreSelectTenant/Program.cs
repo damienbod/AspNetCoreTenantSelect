@@ -18,7 +18,10 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 var env = builder.Environment;
 
-// Add services to the container.
+
+builder.Services.AddDistributedMemoryCache();
+builder.Services.AddTransient<TenantProvider>();
+
 builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
@@ -39,7 +42,6 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
         }
     };
 });
-
 
 services.AddRazorPages().AddMvcOptions(options =>
 {

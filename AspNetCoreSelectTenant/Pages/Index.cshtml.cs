@@ -7,6 +7,13 @@ namespace AspNetCoreSelectTenant.Pages;
 
 public class IndexModel : PageModel
 {
+    private readonly TenantProvider _tenantProvider;
+
+    public IndexModel(TenantProvider tenantProvider)
+    {
+        _tenantProvider = tenantProvider;
+    }
+
     [BindProperty]
     public string TenantId { get; set; } = string.Empty;
 
@@ -25,8 +32,8 @@ public class IndexModel : PageModel
 
         if(name != null)
         {
-            AvailableAppTenants = TenantProvider.GetAvailableTenants(name);
-            AppTenantName = TenantProvider.GetTenant(name);
+            AvailableAppTenants = _tenantProvider.GetAvailableTenants(name);
+            AppTenantName = _tenantProvider.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
 

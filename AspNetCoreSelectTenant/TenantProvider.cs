@@ -1,32 +1,41 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Caching.Distributed;
+using System.Text.Json;
 
 namespace AspNetCoreSelectTenant;
 
-public static class TenantProvider
+public class TenantProvider
 {
     private static SelectListItem _org1 = new("Org1", "7ff95b15-dc21-4ba6-bc92-824856578fc1");
     private static SelectListItem _org2 = new("Org2", "a0958f45-195b-4036-9259-de2f7e594db6");
     private static SelectListItem _org3 = new("Org3", "5698af84-5720-4ff0-bdc3-9d9195314244");
 
-    public static string GetTenantForOrg(string org)
+    private static readonly object _lock = new();
+    private IDistributedCache _cache;
+
+    private const int cacheExpirationInDays = 1;
+
+    public TenantProvider(IDistributedCache cache)
     {
-        if (org == "Org1")
-            return _org1.Value;
-        else if (org == "Org2")
-            return _org2.Value;
-        else
-            return _org3.Value;
+        _cache = cache; 
     }
 
-    public static string GetTenant(string email)
+    public void SetTenant(string email, string org)
     {
-        if (email == "damien_bod@hotmail.com")
-            return "Org1";
-        else
-            return "Org2";
+        AddToCache(email, GetTenantForOrg(org));
     }
 
-    public static List<SelectListItem> GetAvailableTenants(string email)
+    public SelectListItem GetTenant(string email)
+    {
+        var org = GetFromCache(email);
+
+        if (org != null)
+            return org;
+
+        return _org1;
+    }
+
+    public List<SelectListItem> GetAvailableTenants(string email)
     {
         if (email == "damien_bod@hotmail.com")
             return new List<SelectListItem> { _org1, _org2, _org3};
@@ -36,6 +45,38 @@ public static class TenantProvider
             return new List<SelectListItem> { _org2 };
         
         else
-            return new List<SelectListItem> { new SelectListItem("Org1", "1") };
+            return new List<SelectListItem> { _org1 };
+    }
+
+    private SelectListItem GetTenantForOrg(string org)
+    {
+        if (org == "Org1")
+            return _org1;
+        else if (org == "Org2")
+            return _org2;
+        else
+            return _org3;
+    }
+
+    private void AddToCache(string key, SelectListItem userActiveOrg)
+    {
+        var options = new DistributedCacheEntryOptions()
+            .SetSlidingExpiration(TimeSpan.FromDays(cacheExpirationInDays));
+
+        lock (_lock)
+        {
+            _cache.SetString(key, JsonSerializer.Serialize(userActiveOrg), options);
+        }
+    }
+
+    private SelectListItem? GetFromCache(string key)
+    {
+        var item = _cache.GetString(key);
+        if (item != null)
+        {
+            return JsonSerializer.Deserialize<SelectListItem>(item);
+        }
+
+        return null;
     }
 }
