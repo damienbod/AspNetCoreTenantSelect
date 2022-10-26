@@ -18,17 +18,19 @@ var services = builder.Services;
 var configuration = builder.Configuration;
 var env = builder.Environment;
 
+services.AddDistributedMemoryCache();
 
-builder.Services.AddDistributedMemoryCache();
-builder.Services.AddTransient<TenantProvider>();
+services.AddHttpContextAccessor();
+services.AddTransient<TenantProvider>();
 
-builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
+services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
 services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
+    var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
     options.Prompt = "select_account";
-    // options.TenantId = "...";
+    options.TenantId = tenantProvider.GetTenant();
 
     var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
     options.Events.OnTokenValidated = async context =>

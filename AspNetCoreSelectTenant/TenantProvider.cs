@@ -12,17 +12,32 @@ public class TenantProvider
 
     private static readonly object _lock = new();
     private IDistributedCache _cache;
-
+    private readonly IHttpContextAccessor _context;
     private const int cacheExpirationInDays = 1;
 
-    public TenantProvider(IDistributedCache cache)
+    public TenantProvider(IDistributedCache cache, IHttpContextAccessor context)
     {
-        _cache = cache; 
+        _cache = cache;
+        _context = context;
     }
 
     public void SetTenant(string email, string org)
     {
         AddToCache(email, GetTenantForOrg(org));
+    }
+
+    public string GetTenant()
+    {
+        var userEmail = _context.HttpContext!.User.Identity!.Name;
+        if(userEmail != null)
+        {
+            var org = GetFromCache(userEmail);
+
+            if (org != null)
+                return org.Value;
+        }
+
+        return "common";
     }
 
     public SelectListItem GetTenant(string email)
