@@ -22,10 +22,10 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
 
 services.AddRazorPages().AddMvcOptions(options =>
 {
-    //var policy = new AuthorizationPolicyBuilder()
-    //                 .RequireAuthenticatedUser()
-    //                 .Build();
-    //options.Filters.Add(new AuthorizeFilter(policy));
+    var policy = new AuthorizationPolicyBuilder()
+                     .RequireAuthenticatedUser()
+                     .Build();
+    options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();
 
 var app = builder.Build();

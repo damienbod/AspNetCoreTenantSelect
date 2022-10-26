@@ -8,7 +8,7 @@ using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
 
-//[AllowAnonymous]
+[AllowAnonymous]
 public class LoginModel : PageModel
 {
     [BindProperty]
@@ -26,7 +26,6 @@ public class LoginModel : PageModel
     [BindProperty]
     public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
 
-    [HttpGet]
     public void OnGet()
     {
         var name = User.Identity!.Name;
@@ -47,10 +46,22 @@ public class LoginModel : PageModel
         }
     }
 
-    [HttpGet]
-    public IActionResult OnGetSignIn()
+    /// <summary>
+    /// Only works from a direct GET, not a post or a redirect
+    /// </summary>
+    /// <param name="domain"></param>
+    /// <returns></returns>
+    public IActionResult OnGetSignIn([FromQuery]string domain)
     {
         return Challenge(new AuthenticationProperties { RedirectUri = "/"},
                 OpenIdConnectDefaults.AuthenticationScheme);
     }
+
+    //public IActionResult OnPostSignIn()
+    //{
+    //    return Unauthorized();
+    //    return Redirect("Login?handler=SignIn");
+    //    //return Challenge(new AuthenticationProperties { RedirectUri = "/" },
+    //    //        OpenIdConnectDefaults.AuthenticationScheme);
+    //}
 }
