@@ -40,20 +40,25 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
     };
 });
 
+WebApplication app = null;
+
 services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
-    var tenantProvider = services.BuildServiceProvider().GetRequiredService<TenantProvider>();
     options.Prompt = "select_account";
     
     var redirectToIdentityProvider = options.Events.OnRedirectToIdentityProvider;
     options.Events.OnRedirectToIdentityProvider = async context =>
     {
-        var email = context.HttpContext!.User.Identity!.Name;
-        if(email != null)
+        if(app != null)
         {
-            var tenant = tenantProvider.GetTenant(email);
-            var address = context.ProtocolMessage.IssuerAddress.Replace("common", tenant.Value);
-            context.ProtocolMessage.IssuerAddress = address;
+            var tenantProvider = app.Services.GetRequiredService<TenantProvider>();
+            var email = context.HttpContext!.User.Identity!.Name;
+            if (email != null)
+            {
+                var tenant = tenantProvider.GetTenant(email);
+                var address = context.ProtocolMessage.IssuerAddress.Replace("common", tenant.Value);
+                context.ProtocolMessage.IssuerAddress = address;
+            }
         }
 
         await redirectToIdentityProvider(context);
@@ -68,7 +73,7 @@ services.AddRazorPages().AddMvcOptions(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();
 
-var app = builder.Build();
+app = builder.Build();
 
 if (!app.Environment.IsDevelopment())
 {
