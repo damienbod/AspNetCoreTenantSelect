@@ -3,6 +3,9 @@
 <ul class="navbar-nav">
 @if (User.Identity?.IsAuthenticated == true)
 {
+        <li class="nav-item">
+            <a class="nav-link text-dark" asp-area="" asp-page="/SwitchTenant">Switch Tenant</a>
+        </li>
         <span class="navbar-text text-dark">@User.Identity?.Name</span>
         <li class="nav-item">
             <a class="nav-link text-dark" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignOut">Sign out</a>
@@ -11,11 +14,7 @@
 else
 {
         <li class="nav-item">
-            <a class="nav-link text-dark" asp-area="" asp-page="/Login">Login</a>
-        </li>
-
-        @*<li class="nav-item">
             <a class="nav-link text-dark" asp-area="MicrosoftIdentity" asp-controller="Account" asp-action="SignIn">Sign in</a>
-        </li>*@
+        </li>
 }
 </ul>

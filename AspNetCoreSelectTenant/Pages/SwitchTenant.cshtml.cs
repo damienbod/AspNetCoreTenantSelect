@@ -8,8 +8,7 @@ using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
 
-[AllowAnonymous]
-public class LoginModel : PageModel
+public class SwitchTenantModel : PageModel
 {
     [BindProperty]
     public string Domain { get; set; } = string.Empty;
