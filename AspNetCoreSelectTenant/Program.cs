@@ -25,20 +25,20 @@ services.AddTransient<TenantProvider>();
 services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
 
-services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
-{
-    var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
-    options.Events.OnTokenValidated = async context =>
-    {
-        await existingOnTokenValidatedHandler(context);
+//services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
+//{
+//    var existingOnTokenValidatedHandler = options.Events.OnTokenValidated;
+//    options.Events.OnTokenValidated = async context =>
+//    {
+//        await existingOnTokenValidatedHandler(context);
 
-        if (context.Principal != null)
-        {
-            await context.HttpContext.SignInAsync(
-                CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
-        }
-    };
-});
+//        if (context.Principal != null)
+//        {
+//            await context.HttpContext.SignInAsync(
+//                CookieAuthenticationDefaults.AuthenticationScheme, context.Principal);
+//        }
+//    };
+//});
 
 WebApplication? app = null;
 
