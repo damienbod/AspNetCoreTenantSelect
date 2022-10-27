@@ -32,7 +32,7 @@ public class IndexModel : PageModel
 
         if(name != null)
         {
-            AvailableAppTenants = _tenantProvider.GetAvailableTenants(name);
+            AvailableAppTenants = _tenantProvider.GetAvailableTenants();
             AppTenantName = _tenantProvider.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();

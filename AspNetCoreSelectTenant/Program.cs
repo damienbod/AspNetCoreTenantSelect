@@ -40,7 +40,7 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
     };
 });
 
-WebApplication app = null;
+WebApplication? app = null;
 
 services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.AuthenticationScheme, options =>
 {
