@@ -9,3 +9,5 @@ Switch tenants in an ASP.NET Core app using Azure AD with multi tenants
 ## Links
 
 https://learn.microsoft.com/en-us/azure/active-directory/fundamentals/multi-tenant-user-management-introduction
+
+https://github.com/AzureAD/microsoft-identity-web
