@@ -5,7 +5,7 @@ using System.Text.Json;
 namespace AspNetCoreSelectTenant;
 
 /// <summary>
-/// Note, no restrictions are in added. You need to authorize the iss claim after an authentication
+/// Note, no restrictions are in added. You need to authorize the iss and/or the tid claim after an authentication
 /// when only you tenants are allowed to access. 
 /// </summary>
 public class TenantProvider
