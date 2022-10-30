@@ -4,6 +4,10 @@ using System.Text.Json;
 
 namespace AspNetCoreSelectTenant;
 
+/// <summary>
+/// Note, no restrictions are in added. You need to authorize the iss claim after an authentication
+/// when only you tenants are allowed to access. 
+/// </summary>
 public class TenantProvider
 {
     private static readonly SelectListItem _org1 = new("Org1", "7ff95b15-dc21-4ba6-bc92-824856578fc1");
