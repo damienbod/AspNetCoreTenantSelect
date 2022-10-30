@@ -12,7 +12,6 @@ public class TenantHandler : AuthorizationHandler<TenantRequirement>
         if (requirement == null)
             throw new ArgumentNullException(nameof(requirement));
 
-        var client_id = context.User.Claims.FirstOrDefault(t => t.Type == "client_id");
         var tenantId = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/identity/claims/tenantid");
 
         if (IsTenantValid(tenantId))
@@ -32,7 +31,8 @@ public class TenantHandler : AuthorizationHandler<TenantRequirement>
 
         if (tenantId.Value == TenantProvider.TenantOrg1
             || tenantId.Value == TenantProvider.TenantOrg2
-            || tenantId.Value == TenantProvider.TenantOrg3)
+            || tenantId.Value == TenantProvider.TenantOrg3
+            || tenantId.Value == TenantProvider.MicrosoftAccount)
         {
             return true;
         }

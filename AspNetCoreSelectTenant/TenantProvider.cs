@@ -13,6 +13,7 @@ public class TenantProvider
     public const string TenantOrg1 = "7ff95b15-dc21-4ba6-bc92-824856578fc1";
     public const string TenantOrg2 = "a0958f45-195b-4036-9259-de2f7e594db6";
     public const string TenantOrg3 = "5698af84-5720-4ff0-bdc3-9d9195314244";
+    public const string MicrosoftAccount = "9188040d-6c67-4c5b-b112-36a304b66dad";
 
     private static readonly SelectListItem _org1 = new("Org1", TenantOrg1);
     private static readonly SelectListItem _org2 = new("Org2", TenantOrg2);

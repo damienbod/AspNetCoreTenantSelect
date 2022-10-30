@@ -65,10 +65,14 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
     };
 });
 
+services.AddScoped<IAuthorizationHandler, TenantHandler>();
+
 services.AddRazorPages().AddMvcOptions(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
                      .RequireAuthenticatedUser()
+                     // Eanble to force tenant restrictions
+                     // .AddRequirements(new[] { new TenantRequirement() })
                      .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();
