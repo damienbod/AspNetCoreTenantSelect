@@ -4,7 +4,7 @@
 
 Switch tenants in an ASP.NET Core app using Azure AD with multi tenants
 
-[blog](https://damienbod.com)
+[blog](https://damienbod.com/2022/10/31/switch-tenants-in-an-asp-net-core-app-using-azure-ad-with-multi-tenants/)
 
 ## Links
 
