@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
-namespace AspNetCoreSelectTenant;
+namespace AspNetCoreSelectTenant.Tenants;
 
 /// <summary>
 /// Note, no restrictions are in added. You need to authorize the iss and/or the tid claim after an authentication
@@ -22,11 +22,13 @@ public class TenantProvider
 
     private static readonly object _lock = new();
     private IDistributedCache _cache;
+    private readonly TenantContext _tenantContext;
     private const int cacheExpirationInDays = 1;
 
-    public TenantProvider(IDistributedCache cache)
+    public TenantProvider(IDistributedCache cache, TenantContext tenantContext)
     {
         _cache = cache;
+        _tenantContext = tenantContext;
     }
 
     public void SetTenant(string email, string org)

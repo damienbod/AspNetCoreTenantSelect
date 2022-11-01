@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using AspNetCoreSelectTenant.Tenants;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,13 @@ var env = builder.Environment;
 
 services.AddDistributedMemoryCache();
 
-services.AddTransient<TenantProvider>();
+var connection = configuration.GetConnectionString("DefaultConnection");
+
+services.AddDbContext<TenantContext>(options =>
+    options.UseSqlServer(connection)
+);
+
+services.AddScoped<TenantProvider>();
 
 services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
