@@ -5,7 +5,12 @@ namespace AspNetCoreSelectTenant.Tenants;
 
 public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
 {
-    private const string TenantOrg1 = "7ff95b15-dc21-4ba6-bc92-824856578fc1";
+    private readonly string tenantHomeId;
+
+    public TenantAdminHandler(IConfiguration configuration)
+    {
+        tenantHomeId = configuration["AdminHomeTenant"];
+    }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TenantAdminRequirement requirement)
     {
@@ -28,14 +33,14 @@ public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
         return Task.CompletedTask;
     }
 
-    private static bool IsTenantValid(Claim? tenantId)
+    private bool IsTenantValid(Claim? tenantId)
     {
         if (tenantId == null)
         {
             return false;
         }
 
-        if (tenantId.Value == TenantOrg1)
+        if (tenantId.Value == tenantHomeId)
         {
             return true;
         }
