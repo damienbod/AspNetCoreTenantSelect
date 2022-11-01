@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using System.ComponentModel.DataAnnotations;
 using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
@@ -38,6 +39,21 @@ public class AdminModel : PageModel
                 return Page();
             }
 
+            if (Tenant.TenantId == null)
+            {
+                ModelState.AddModelError("TenantId", "TenantId is required");
+                return Page();
+            }
+
+            Guid guid;
+            var isTenantIdValid = Guid.TryParse(Tenant.TenantId, out guid);
+
+            if (!isTenantIdValid)
+            {
+                ModelState.AddModelError("TenantId", "Valid TenantId is required");
+                return Page();
+            }
+
             if (availableAppTenants.Any(a => a.Value.ToLower() == Tenant.TenantId.ToLower()))
             {
                 ModelState.AddModelError("TenantId", "TenantId with this ID already exists");
@@ -47,7 +63,7 @@ public class AdminModel : PageModel
             await _tenantProvider.AddTenantAsync(Tenant);
         }
 
-        return RedirectToPage("./Admin");
+        return RedirectToPage("./Index");
     }
 
     public void OnGet()
