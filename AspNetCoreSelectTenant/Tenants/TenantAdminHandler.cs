@@ -16,7 +16,7 @@ public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
 
         var tenantId = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/identity/claims/tenantid");
         
-        var role = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/identity/claims/role" 
+        var role = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             && t.Value == "tenant-admin");
 
 

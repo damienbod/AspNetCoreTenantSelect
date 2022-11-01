@@ -75,6 +75,15 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
 });
 
 services.AddScoped<IAuthorizationHandler, TenantHandler>();
+services.AddScoped<IAuthorizationHandler, TenantAdminHandler>();
+
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("TenantAdminPolicy", policyIsAdminRequirement =>
+    {
+        policyIsAdminRequirement.Requirements.Add(new TenantAdminRequirement());
+    });
+});
 
 services.AddRazorPages().AddMvcOptions(options =>
 {
