@@ -8,6 +8,12 @@ Switch tenants in an ASP.NET Core app using Azure AD with multi tenants
 
 ## Migrations
 
+```
+Add-Migration "init"
+
+Update-Database
+```
+
 ## Links
 
 https://learn.microsoft.com/en-us/azure/active-directory/develop/id-tokens

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using System.Text.Json;
 
@@ -46,9 +47,14 @@ public class TenantProvider
         return _common;
     }
 
-    public List<SelectListItem> GetAvailableTenants()
+    public async Task<List<SelectListItem>> GetAvailableTenantsAsync()
     {
-        return new List<SelectListItem> { _org1, _org2, _org3, _common };
+        var items = await _tenantContext.Tenants.ToListAsync();
+        return items.Select(t => new SelectListItem
+        {
+            Text = t.Name,
+            Value = t.TenantId
+        }).ToList();
     }
 
     private SelectListItem GetTenantForOrg(string org)

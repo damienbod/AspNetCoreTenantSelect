@@ -32,13 +32,13 @@ public class SwitchTenantModel : PageModel
     [BindProperty]
     public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
         var name = User.Identity!.Name;
 
         if (name != null)
         {
-            AvailableAppTenants = _tenantProvider.GetAvailableTenants();
+            AvailableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
             AppTenantName = _tenantProvider.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
