@@ -46,4 +46,10 @@ public class TenantProvider
 
         return _common;
     }
+
+    public async Task AddTenantAsync(Tenant tenant)
+    {
+        _tenantContext.Tenants.Add(tenant);
+        await _tenantContext.SaveChangesAsync();
+    }
 }

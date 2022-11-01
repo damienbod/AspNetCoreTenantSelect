@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
@@ -18,34 +19,38 @@ public class AdminModel : PageModel
     }
 
     [BindProperty]
-    public string TenantId { get; set; } = string.Empty;
+    public Tenant? Tenant { get; set; }
 
-    [BindProperty]
-    public List<string> RolesInTenant { get; set; } = new List<string>();
-
-    [BindProperty]
-    public string AppTenantName { get; set; } = string.Empty;
-
-    [BindProperty]
-    public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
-
-    public async Task OnGetAsync()
+    public async Task<IActionResult> OnPostAsync()
     {
-        var name = User.Identity!.Name;
-
-        if(name != null)
+        if (!ModelState.IsValid)
         {
-            AvailableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
-            AppTenantName = _tenantProviderCache.GetTenant(name).Text;
+            return Page();
+        }
 
-            List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
+        if (Tenant != null)
+        {
+            var availableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
 
-            foreach (var role in roleClaims)
+            if(availableAppTenants.Any(a => a.Text.ToLower() == Tenant.Name.ToLower()))
             {
-                RolesInTenant.Add(role.Value);
+                ModelState.AddModelError("Name", "Tenant with this name already exists");
+                return Page();
             }
 
-            TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
+            if (availableAppTenants.Any(a => a.Value.ToLower() == Tenant.TenantId.ToLower()))
+            {
+                ModelState.AddModelError("TenantId", "TenantId with this ID already exists");
+                return Page();
+            }
+
+            await _tenantProvider.AddTenantAsync(Tenant);
         }
+
+        return RedirectToPage("./Admin");
+    }
+
+    public void OnGet()
+    {
     }
 }
