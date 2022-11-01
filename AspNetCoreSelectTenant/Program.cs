@@ -29,6 +29,7 @@ services.AddDbContext<TenantContext>(options =>
 );
 
 services.AddScoped<TenantProvider>();
+services.AddTransient<TenantProviderCache>();
 
 services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
@@ -59,11 +60,11 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
     {
         if(app != null)
         {
-            var tenantProvider = app.Services.GetRequiredService<TenantProvider>();
+            var tenantProviderCache = app.Services.GetRequiredService<TenantProviderCache>();
             var email = context.HttpContext!.User.Identity!.Name;
             if (email != null)
             {
-                var tenant = tenantProvider.GetTenant(email);
+                var tenant = tenantProviderCache.GetTenant(email);
                 var address = context.ProtocolMessage.IssuerAddress.Replace("common", tenant.Value);
                 context.ProtocolMessage.IssuerAddress = address;
             }

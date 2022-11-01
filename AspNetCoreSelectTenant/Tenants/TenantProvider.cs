@@ -11,40 +11,13 @@ namespace AspNetCoreSelectTenant.Tenants;
 /// </summary>
 public class TenantProvider
 {
-    public const string TenantOrg1 = "7ff95b15-dc21-4ba6-bc92-824856578fc1";
-    public const string TenantOrg2 = "a0958f45-195b-4036-9259-de2f7e594db6";
-    public const string TenantOrg3 = "5698af84-5720-4ff0-bdc3-9d9195314244";
-    public const string MicrosoftAccount = "9188040d-6c67-4c5b-b112-36a304b66dad";
-
-    private static readonly SelectListItem _org1 = new("Org1", TenantOrg1);
-    private static readonly SelectListItem _org2 = new("Org2", TenantOrg2);
-    private static readonly SelectListItem _org3 = new("Org3", TenantOrg3);
     private static readonly SelectListItem _common = new("common", "common");
 
-    private static readonly object _lock = new();
-    private IDistributedCache _cache;
     private readonly TenantContext _tenantContext;
-    private const int cacheExpirationInDays = 1;
 
-    public TenantProvider(IDistributedCache cache, TenantContext tenantContext)
+    public TenantProvider(TenantContext tenantContext)
     {
-        _cache = cache;
         _tenantContext = tenantContext;
-    }
-
-    public void SetTenant(string email, string org)
-    {
-        AddToCache(email, GetTenantForOrg(org));
-    }
-
-    public SelectListItem GetTenant(string email)
-    {
-        var org = GetFromCache(email);
-
-        if (org != null)
-            return org;
-
-        return _common;
     }
 
     public async Task<List<SelectListItem>> GetAvailableTenantsAsync()
@@ -57,37 +30,20 @@ public class TenantProvider
         }).ToList();
     }
 
-    private SelectListItem GetTenantForOrg(string org)
+    public async Task<SelectListItem> GetTenantForOrg(string org)
     {
-        if (org == "Org1")
-            return _org1;
-        else if (org == "Org2")
-            return _org2;
-        else if (org == "Org3")
-            return _org3;
+        var organization = await _tenantContext.Tenants
+            .FirstOrDefaultAsync(o => o.Name == org);
+
+        if (organization != null)
+        {
+            return new SelectListItem
+            {
+                Text = organization.Name,
+                Value = organization.TenantId
+            };
+        }
 
         return _common;
-    }
-
-    private void AddToCache(string key, SelectListItem userActiveOrg)
-    {
-        var options = new DistributedCacheEntryOptions()
-            .SetSlidingExpiration(TimeSpan.FromDays(cacheExpirationInDays));
-
-        lock (_lock)
-        {
-            _cache.SetString(key, JsonSerializer.Serialize(userActiveOrg), options);
-        }
-    }
-
-    private SelectListItem? GetFromCache(string key)
-    {
-        var item = _cache.GetString(key);
-        if (item != null)
-        {
-            return JsonSerializer.Deserialize<SelectListItem>(item);
-        }
-
-        return null;
     }
 }
