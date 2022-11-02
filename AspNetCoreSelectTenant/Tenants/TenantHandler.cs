@@ -50,5 +50,4 @@ public class TenantHandler : AuthorizationHandler<TenantRequirement>
 
         return false;
     }
-
 }
