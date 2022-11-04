@@ -20,12 +20,13 @@ public class TenantProvider
 
     public async Task<List<SelectListItem>> GetAvailableTenantsAsync()
     {
-        var items = await _tenantContext.Tenants.ToListAsync();
-        return items.Select(t => new SelectListItem
-        {
-            Text = t.Name,
-            Value = t.TenantId
-        }).ToList();
+        return await _tenantContext.Tenants
+            .AsNoTracking()
+            .Select(t => new SelectListItem
+            {
+                Text = t.Name,
+                Value = t.TenantId
+            }).ToListAsync();
     }
 
     public async Task<SelectListItem> GetTenantForOrg(string org)
