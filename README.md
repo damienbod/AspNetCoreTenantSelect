@@ -14,6 +14,10 @@ Add-Migration "init"
 Update-Database
 ```
 
+## History
+
+2022-12-23 Updated to .NET 7
+
 ## Links
 
 https://learn.microsoft.com/en-us/azure/active-directory/develop/id-tokens
