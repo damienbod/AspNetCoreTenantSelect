@@ -4,16 +4,19 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
+using AspNetCoreSelectTenant.Tenants;
 
 namespace AspNetCoreSelectTenant.Pages;
 
 public class SwitchTenantModel : PageModel
 {
     private readonly TenantProvider _tenantProvider;
+    private readonly TenantProviderCache _tenantProviderCache;
 
-    public SwitchTenantModel(TenantProvider tenantProvider)
+    public SwitchTenantModel(TenantProvider tenantProvider, TenantProviderCache tenantProviderCache)
     {
         _tenantProvider = tenantProvider;
+        _tenantProviderCache = tenantProviderCache;
     }
 
     [BindProperty]
@@ -31,14 +34,14 @@ public class SwitchTenantModel : PageModel
     [BindProperty]
     public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
         var name = User.Identity!.Name;
 
         if (name != null)
         {
-            AvailableAppTenants = _tenantProvider.GetAvailableTenants();
-            AppTenantName = _tenantProvider.GetTenant(name).Text;
+            AvailableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
+            AppTenantName = _tenantProviderCache.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
 
@@ -54,11 +57,14 @@ public class SwitchTenantModel : PageModel
     /// <summary>
     /// Only works from a direct GET, not a post or a redirect
     /// </summary>
-    public IActionResult OnGetSignIn([FromQuery]string domain)
+    public async Task<IActionResult> OnGetSignIn([FromQuery]string domain)
     {
         var email = User.Identity!.Name;
         if(email != null)
-            _tenantProvider.SetTenant(email, domain);
+        {
+            var organization = await _tenantProvider.GetTenantForOrg(domain);
+            _tenantProviderCache.SetTenant(email, organization);
+        }
 
         return Challenge(new AuthenticationProperties { RedirectUri = "/" },
                 OpenIdConnectDefaults.AuthenticationScheme);

@@ -1,0 +1,41 @@
+﻿@page
+@model AdminModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@{
+    ViewData["Title"] = "Tenant Admin";
+}
+
+<p>Enter a customer name:</p>
+
+
+
+<div class="card col-8">
+    <div class="card-body">
+        <h5 class="card-title">Add Tenant</h5>
+
+        <div class="row">
+            <form method="post">
+                <div asp-validation-summary="All" class="text-danger"></div>
+
+                <div class="form-group">
+                    <label asp-for="Tenant!.Name" class="control-label"></label>
+                    <input asp-for="Tenant!.Name" class="form-control" />
+                    <span asp-validation-for="Tenant!.Name" class="text-danger"></span>
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Tenant!.TenantId" class="control-label"></label>
+                    <input asp-for="Tenant!.TenantId" class="form-control" />
+                    <span asp-validation-for="Tenant!.TenantId" class="text-danger"></span>
+                </div>
+
+                <hr />
+
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-primary" />
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>

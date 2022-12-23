@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using AspNetCoreSelectTenant.Tenants;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +22,14 @@ var env = builder.Environment;
 
 services.AddDistributedMemoryCache();
 
-services.AddTransient<TenantProvider>();
+var connection = configuration.GetConnectionString("DefaultConnection");
+
+services.AddDbContext<TenantContext>(options =>
+    options.UseSqlServer(connection)
+);
+
+services.AddScoped<TenantProvider>();
+services.AddTransient<TenantProviderCache>();
 
 services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApp(builder.Configuration.GetSection("AzureAd"));
@@ -51,11 +60,11 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
     {
         if(app != null)
         {
-            var tenantProvider = app.Services.GetRequiredService<TenantProvider>();
+            var tenantProviderCache = app.Services.GetRequiredService<TenantProviderCache>();
             var email = context.HttpContext!.User.Identity!.Name;
             if (email != null)
             {
-                var tenant = tenantProvider.GetTenant(email);
+                var tenant = tenantProviderCache.GetTenant(email);
                 var address = context.ProtocolMessage.IssuerAddress.Replace("common", tenant.Value);
                 context.ProtocolMessage.IssuerAddress = address;
             }
@@ -66,13 +75,22 @@ services.Configure<MicrosoftIdentityOptions>(OpenIdConnectDefaults.Authenticatio
 });
 
 services.AddScoped<IAuthorizationHandler, TenantHandler>();
+services.AddScoped<IAuthorizationHandler, TenantAdminHandler>();
+
+services.AddAuthorization(options =>
+{
+    options.AddPolicy("TenantAdminPolicy", policyIsAdminRequirement =>
+    {
+        policyIsAdminRequirement.Requirements.Add(new TenantAdminRequirement());
+    });
+});
 
 services.AddRazorPages().AddMvcOptions(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
                      .RequireAuthenticatedUser()
                      // Eanble to force tenant restrictions
-                     // .AddRequirements(new[] { new TenantRequirement() })
+                     .AddRequirements(new[] { new TenantRequirement() })
                      .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();

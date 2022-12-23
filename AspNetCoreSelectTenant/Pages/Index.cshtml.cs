@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AspNetCoreSelectTenant.Tenants;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
@@ -8,10 +9,12 @@ namespace AspNetCoreSelectTenant.Pages;
 public class IndexModel : PageModel
 {
     private readonly TenantProvider _tenantProvider;
+    private readonly TenantProviderCache _tenantProviderCache;
 
-    public IndexModel(TenantProvider tenantProvider)
+    public IndexModel(TenantProvider tenantProvider, TenantProviderCache tenantProviderCache)
     {
         _tenantProvider = tenantProvider;
+        _tenantProviderCache = tenantProviderCache;
     }
 
     [BindProperty]
@@ -26,14 +29,14 @@ public class IndexModel : PageModel
     [BindProperty]
     public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
 
-    public void OnGet()
+    public async Task OnGetAsync()
     {
         var name = User.Identity!.Name;
 
         if(name != null)
         {
-            AvailableAppTenants = _tenantProvider.GetAvailableTenants();
-            AppTenantName = _tenantProvider.GetTenant(name).Text;
+            AvailableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
+            AppTenantName = _tenantProviderCache.GetTenant(name).Text;
 
             List<Claim> roleClaims = HttpContext.User.FindAll(ClaimTypes.Role).ToList();
 
