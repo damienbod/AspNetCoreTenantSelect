@@ -2,9 +2,9 @@
 
 [![.NET](https://github.com/damienbod/AspNetCoreTenantSelect/actions/workflows/dotnet.yml/badge.svg)](https://github.com/damienbod/AspNetCoreTenantSelect/actions/workflows/dotnet.yml)
 
-Switch tenants in an ASP.NET Core app using Azure AD with multi tenants
+[Switch tenants in an ASP.NET Core app using Azure AD with multi tenants](https://damienbod.com/2022/10/31/switch-tenants-in-an-asp-net-core-app-using-azure-ad-with-multi-tenants/)
 
-[blog](https://damienbod.com/2022/10/31/switch-tenants-in-an-asp-net-core-app-using-azure-ad-with-multi-tenants/)
+[Azure AD Multi tenant Azure App registration consent](https://damienbod.com/2023/01/02/azure-ad-multi-tenant-azure-app-registration-consent/)
 
 ## Migrations
 
