@@ -16,13 +16,11 @@ Update-Database
 
 ## History
 
-2023-09-23 Updated packages
-
-2023-04-28 Updated packages
-
-2023-02-24 Updated packages
-
-2022-12-23 Updated to .NET 7
+- 2023-09-23 Updated packages, fixed security headers
+- 2023-09-23 Updated packages
+- 2023-04-28 Updated packages
+- 2023-02-24 Updated packages
+- 2022-12-23 Updated to .NET 7
 
 ## Links
 
