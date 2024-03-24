@@ -16,6 +16,7 @@ Update-Database
 
 ## History
 
+- 2024-03-24 .NET 8
 - 2023-09-23 Updated packages, fixed security headers
 - 2023-09-23 Updated packages
 - 2023-04-28 Updated packages
