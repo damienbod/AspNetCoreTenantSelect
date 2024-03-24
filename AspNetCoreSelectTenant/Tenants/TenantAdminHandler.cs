@@ -9,7 +9,10 @@ public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
 
     public TenantAdminHandler(IConfiguration configuration)
     {
-        tenantHomeId = configuration["AdminHomeTenant"];
+        var tid = configuration["AdminHomeTenant"] 
+            ?? throw new Exception("AdminHomeTenant configuration not set");
+
+        tenantHomeId = tid;
     }
 
     protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, TenantAdminRequirement requirement)

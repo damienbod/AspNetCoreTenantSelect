@@ -50,7 +50,9 @@ public class SwitchTenantModel : PageModel
                 RolesInTenant.Add(role.Value);
             }
 
-            TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
+            var tid = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
+
+            if (tid != null) TenantId = tid;
         }
     }
 

@@ -21,13 +21,13 @@ public class IndexModel : PageModel
     public string TenantId { get; set; } = string.Empty;
 
     [BindProperty]
-    public List<string> RolesInTenant { get; set; } = new List<string>();
+    public List<string> RolesInTenant { get; set; } = [];
 
     [BindProperty]
     public string AppTenantName { get; set; } = string.Empty;
 
     [BindProperty]
-    public List<SelectListItem> AvailableAppTenants { get; set; } = new List<SelectListItem>();
+    public List<SelectListItem> AvailableAppTenants { get; set; } = [];
 
     public async Task OnGetAsync()
     {

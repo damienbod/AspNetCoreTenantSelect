@@ -88,10 +88,11 @@ services.AddAuthorization(options =>
 services.AddRazorPages().AddMvcOptions(options =>
 {
     var policy = new AuthorizationPolicyBuilder()
-                     .RequireAuthenticatedUser()
-                     // Eanble to force tenant restrictions
-                     .AddRequirements(new[] { new TenantRequirement() })
-                     .Build();
+        .RequireAuthenticatedUser()
+        // Eanble to force tenant restrictions
+        .AddRequirements(new[] { new TenantRequirement() })
+        .Build();
+
     options.Filters.Add(new AuthorizeFilter(policy));
 }).AddMicrosoftIdentityUI();
 
