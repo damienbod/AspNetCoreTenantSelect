@@ -1,10 +1,6 @@
 ﻿using AspNetCoreSelectTenant.Tenants;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace AspNetCoreSelectTenant.Pages;
 
@@ -33,7 +29,7 @@ public class AdminModel : PageModel
         {
             var availableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
 
-            if(availableAppTenants.Any(a => a.Text.ToLower() == Tenant.Name.ToLower()))
+            if (availableAppTenants.Any(a => a.Text.ToLower() == Tenant.Name.ToLower()))
             {
                 ModelState.AddModelError("Name", "Tenant with this name already exists");
                 return Page();

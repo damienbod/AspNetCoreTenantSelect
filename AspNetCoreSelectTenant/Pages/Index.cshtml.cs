@@ -33,7 +33,7 @@ public class IndexModel : PageModel
     {
         var name = User.Identity!.Name;
 
-        if(name != null)
+        if (name != null)
         {
             AvailableAppTenants = await _tenantProvider.GetAvailableTenantsAsync();
             AppTenantName = _tenantProviderCache.GetTenant(name).Text;

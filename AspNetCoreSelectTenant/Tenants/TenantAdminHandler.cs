@@ -9,7 +9,7 @@ public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
 
     public TenantAdminHandler(IConfiguration configuration)
     {
-        var tid = configuration["AdminHomeTenant"] 
+        var tid = configuration["AdminHomeTenant"]
             ?? throw new Exception("AdminHomeTenant configuration not set");
 
         tenantHomeId = tid;
@@ -23,7 +23,7 @@ public class TenantAdminHandler : AuthorizationHandler<TenantAdminRequirement>
             throw new ArgumentNullException(nameof(requirement));
 
         var tenantId = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/identity/claims/tenantid");
-        
+
         var role = context.User.Claims.FirstOrDefault(t => t.Type == "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
             && t.Value == "tenant-admin");
 

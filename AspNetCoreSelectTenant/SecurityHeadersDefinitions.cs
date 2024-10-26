@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Builder;
-
-namespace AspNetCoreSelectTenant;
+﻿namespace AspNetCoreSelectTenant;
 
 public static class SecurityHeadersDefinitions
 {

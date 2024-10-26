@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Authentication.OpenIdConnect;
+﻿using AspNetCoreSelectTenant.Tenants;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.OpenIdConnect;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Security.Claims;
-using AspNetCoreSelectTenant.Tenants;
 
 namespace AspNetCoreSelectTenant.Pages;
 
@@ -59,10 +59,10 @@ public class SwitchTenantModel : PageModel
     /// <summary>
     /// Only works from a direct GET, not a post or a redirect
     /// </summary>
-    public async Task<IActionResult> OnGetSignIn([FromQuery]string domain)
+    public async Task<IActionResult> OnGetSignIn([FromQuery] string domain)
     {
         var email = User.Identity!.Name;
-        if(email != null)
+        if (email != null)
         {
             var organization = await _tenantProvider.GetTenantForOrg(domain);
             _tenantProviderCache.SetTenant(email, organization);
