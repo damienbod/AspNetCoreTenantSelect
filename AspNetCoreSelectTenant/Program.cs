@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using NetEscapades.AspNetCore.SecurityHeaders.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,6 +17,13 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 
 var services = builder.Services;
 var configuration = builder.Configuration;
+
+services.AddSecurityHeaderPolicies()
+  .SetPolicySelector((PolicySelectorContext ctx) =>
+  {
+      return SecurityHeadersDefinitions
+        .GetHeaderPolicyCollection(builder.Environment.IsDevelopment());
+  });
 
 services.AddDistributedMemoryCache();
 
@@ -101,8 +109,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
-app.UseSecurityHeaders(SecurityHeadersDefinitions
-    .GetHeaderPolicyCollection(app.Environment.IsDevelopment()));
+app.UseSecurityHeaders();
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
