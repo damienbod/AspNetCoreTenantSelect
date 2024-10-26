@@ -45,7 +45,8 @@ public class IndexModel : PageModel
                 RolesInTenant.Add(role.Value);
             }
 
-            TenantId = HttpContext.User.FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid");
+            TenantId = HttpContext.User
+                .FindFirstValue("http://schemas.microsoft.com/identity/claims/tenantid")!;
         }
     }
 }

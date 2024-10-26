@@ -16,7 +16,6 @@ builder.WebHost.ConfigureKestrel(serverOptions =>
 
 var services = builder.Services;
 var configuration = builder.Configuration;
-var env = builder.Environment;
 
 services.AddDistributedMemoryCache();
 
@@ -88,7 +87,7 @@ services.AddRazorPages().AddMvcOptions(options =>
     var policy = new AuthorizationPolicyBuilder()
         .RequireAuthenticatedUser()
         // Eanble to force tenant restrictions
-        .AddRequirements(new[] { new TenantRequirement() })
+        .AddRequirements([new TenantRequirement()])
         .Build();
 
     options.Filters.Add(new AuthorizeFilter(policy));
@@ -103,7 +102,7 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseSecurityHeaders(SecurityHeadersDefinitions
-    .GetHeaderPolicyCollection(env.IsDevelopment()));
+    .GetHeaderPolicyCollection(app.Environment.IsDevelopment()));
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
