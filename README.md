@@ -16,6 +16,7 @@ Update-Database
 
 ## History
 
+- 2025-12-14 .NET 10
 - 2025-08-03 Updated packages
 - 2025-04-30 Updated packages
 - 2025-01-01 Updated packages
